@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Feature extends Model
+{
+    public function release(): BelongsTo
+    {
+        return $this->belongsTo(Release::class);
+    }
+
+    public function developer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'developer_id');
+    }
+
+    public function bugReports(): HasMany
+    {
+        return $this->hasMany(BugReport::class);
+    }
+
+    public function changeRequests(): HasMany
+    {
+        return $this->hasMany(ChangeRequest::class);
+    }
+}
