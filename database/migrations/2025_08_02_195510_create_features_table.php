@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('release_id')->constrained()->onDelete('cascade');
             $table->foreignId('developer_id')->references('id')->on('users');
+            $table->foreignId('project_id')->references('id')->on('projects');
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->string('type')->default('feature');
+            $table->string('branch');
+            $table->string('api_id')->nullable();
             $table->json('tags')->nullable();
             $table->timestamps();
         });

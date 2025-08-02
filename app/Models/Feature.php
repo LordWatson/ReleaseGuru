@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Feature extends Model
 {
+    protected $casts = [
+        'tags' => 'array',
+    ];
+
     public function release(): BelongsTo
     {
         return $this->belongsTo(Release::class);
