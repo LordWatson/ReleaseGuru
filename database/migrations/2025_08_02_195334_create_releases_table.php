@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->date('release_date')->nullable();
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('released_by')->references('id')->on('users');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->string('branch')->nullable();

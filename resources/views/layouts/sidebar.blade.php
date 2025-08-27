@@ -2,22 +2,27 @@
     <nav class="w-full text-center">
         <ul class="space-y-6">
             <li>
-                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <x-nav-link :href="route('users.index')" :active="request()->is('users')">
                     {{ __('Users') }}
                 </x-nav-link>
             </li>
             <li>
-                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('releases')">
+                <x-nav-link :href="route('projects.index')" :active="request()->is('projects')">
+                    {{ __('Projects') }}
+                </x-nav-link>
+            </li>
+            <li>
+                <x-nav-link :href="route('releases.index')" :active="request()->is('releases')">
                     {{ __('Releases') }}
                 </x-nav-link>
             </li>
             <li>
-                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('tasks')">
-                    {{ __('Tasks') }}
+                <x-nav-link :href="route('features.index')" :active="request()->is('features')">
+                    {{ __('Features') }}
                 </x-nav-link>
             </li>
             <li>
-                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('reports')">
+                <x-nav-link :href="route('reports.index')" :active="request()->is('reports')">
                     {{ __('Reports') }}
                 </x-nav-link>
             </li>

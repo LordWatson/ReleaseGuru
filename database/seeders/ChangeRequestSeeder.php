@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\FeatureTypeEnum;
 use App\Models\ChangeRequest;
 use App\Models\Feature;
 use App\Models\User;
@@ -15,19 +16,17 @@ class ChangeRequestSeeder extends Seeder
      */
     public function run(): void
     {
-        $features = Feature::all();
+        $features = Feature::where('type', FeatureTypeEnum::ChangeRequest)->get();
         $qa = User::where('role_id', 3)->first();
 
         foreach($features as $feature){
-            for($i = 0; $i < rand(0, 2); $i++){
-                ChangeRequest::create([
-                    'feature_id' => $feature->id,
-                    'created_by' => $qa->id,
-                    'title' => 'Request: ' . fake()->words(3, true),
-                    'description' => fake()->paragraph,
-                    'status' => collect(['open', 'approved', 'rejected'])->random(),
-                ]);
-            }
+            ChangeRequest::create([
+                'feature_id' => $feature->id,
+                'created_by' => $qa->id,
+                'title' => 'Request: ' . fake()->words(3, true),
+                'description' => fake()->paragraph,
+                'status' => collect(['open', 'approved', 'rejected', 'completed'])->random(),
+            ]);
         }
     }
 }

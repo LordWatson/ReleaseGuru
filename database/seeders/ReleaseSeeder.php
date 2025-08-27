@@ -23,7 +23,7 @@ class ReleaseSeeder extends Seeder
                 Release::create([
                     'project_id' => $project->id,
                     'release_date' => now()->addDays(rand(-30, 30)),
-                    'user_id' => $developers->random()->id,
+                    'released_by' => $developers->random()->id,
                     'name' => "Release {$i}.0",
                     'description' => fake()->sentence(),
                     'branch' => "release/{$i}.0",

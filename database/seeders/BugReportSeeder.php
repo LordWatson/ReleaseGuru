@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\FeatureTypeEnum;
 use App\Models\BugReport;
 use App\Models\Feature;
 use App\Models\User;
@@ -15,19 +16,17 @@ class BugReportSeeder extends Seeder
      */
     public function run(): void
     {
-        $features = Feature::all();
+        $features = Feature::where('type', FeatureTypeEnum::BugFix)->get();
         $qa = User::where('role_id', 3)->first();
 
         foreach($features as $feature){
-            for($i = 0; $i < rand(0, 10); $i++){
-                BugReport::create([
-                    'feature_id' => $feature->id,
-                    'created_by' => $qa->id,
-                    'title' => 'Bug: ' . fake()->words(3, true),
-                    'description' => fake()->paragraph,
-                    'status' => collect(['open', 'in_progress', 'closed'])->random(),
-                ]);
-            }
+            BugReport::create([
+                'feature_id' => $feature->id,
+                'created_by' => $qa->id,
+                'title' => 'Bug: ' . fake()->words(3, true),
+                'description' => fake()->paragraph,
+                'status' => collect(['open', 'in_progress', 'closed'])->random(),
+            ]);
         }
     }
 }
