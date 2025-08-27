@@ -19,7 +19,7 @@ class DashboardController extends Controller
     {
         $dashboardData = $this->dashboardStatisticsService->getComprehensiveDashboardStats();
 
-        $projects = Project::get();
+        $projects = Project::activeFeaturesCount()->get();
 
         return view('dashboard.dashboard', compact('dashboardData', 'projects'));
 

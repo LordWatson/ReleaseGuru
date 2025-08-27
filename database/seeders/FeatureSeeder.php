@@ -37,6 +37,7 @@ class FeatureSeeder extends Seeder
                     'type' => $type,
                     'branch' => "$type/" . fake()->slug(3),
                     'api_id' => rand(0, 1) ? fake()->numberBetween(1000, 9999) : null,
+                    'status' => collect(['open', 'approved', 'rejected', 'in progress' ,'completed'])->random(),
                     'tags' => array_rand(array_flip($tagsPool), rand(1, 4)),
                 ]);
             }

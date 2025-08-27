@@ -1,6 +1,6 @@
 <div class="bg-white overflow-hidden rounded-lg shadow-md mb-6">
-    <div class="px-6 py-4 border-b">
-        <h3 class="font-semibold text-lg text-gray-800">Software Projects</h3>
+    <div class="px-6 py-4 border-b primary-background">
+        <h3 class="font-semibold text-lg">Software Projects</h3>
     </div>
     <div class="p-4">
         <table class="min-w-full divide-y divide-gray-200">
@@ -13,7 +13,7 @@
                     Health
                 </th>
                 <th scope="col" class="px-4 py-2 text-sm text-gray-500 font-medium">
-                    Outstanding Features
+                    WIP Features
                 </th>
                 <th scope="col" class="px-4 py-2 text-sm text-gray-500 font-medium">
                     Next Release
@@ -26,8 +26,15 @@
                     <td class="px-4 py-2 text-sm">
                         <a href="{{ route('projects.show', ['project' => $project->id]) }}">{{ $project->name }}</a>
                     </td>
-                    <td class="health px-4 py-2 text-sm text-gray-900">Running</td>
-                    <td class="outstanding-features px-4 py-2 text-sm text-gray-900">{{ 123 }}</td>
+                    <td class="health px-4 py-2 text-sm">
+                        <x-status-label
+                            :status="$project->health"
+                            class="{{ \App\Enums\ProjectHealthEnum::from($project->health)->labelClass() }}"
+                            >
+                            {{ __( ucfirst($project->health) ) }}
+                        </x-status-label>
+                    </td>
+                    <td class="outstanding-features px-4 py-2 text-sm text-gray-900">{{ $project->active_features_count }}</td>
                     <td class="next-release px-4 py-2 text-sm text-gray-900">{{ now() }}</td>
                 </tr>
             @endforeach

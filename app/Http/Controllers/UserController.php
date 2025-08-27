@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BugReport;
 use Illuminate\Http\Request;
 
-class BugReportController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +33,7 @@ class BugReportController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BugReport $bugReport)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +41,7 @@ class BugReportController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(BugReport $bugReport)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +49,7 @@ class BugReportController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, BugReport $bugReport)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +57,7 @@ class BugReportController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BugReport $bugReport)
+    public function destroy(string $id)
     {
         //
     }

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('type')->default('feature');
             $table->string('branch');
             $table->string('api_id')->nullable();
+            $table->string('status')->nullable();
             $table->json('tags')->nullable();
             $table->timestamps();
         });

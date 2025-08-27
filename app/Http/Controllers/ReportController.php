@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChangeRequest;
 use Illuminate\Http\Request;
 
-class ChangeRequestController extends Controller
+class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +33,7 @@ class ChangeRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ChangeRequest $changeRequest)
+    public function show(string $id)
     {
         //
     }
@@ -42,7 +41,7 @@ class ChangeRequestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ChangeRequest $changeRequest)
+    public function edit(string $id)
     {
         //
     }
@@ -50,7 +49,7 @@ class ChangeRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ChangeRequest $changeRequest)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -58,7 +57,7 @@ class ChangeRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ChangeRequest $changeRequest)
+    public function destroy(string $id)
     {
         //
     }

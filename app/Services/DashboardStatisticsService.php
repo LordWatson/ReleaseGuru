@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Feature;
-use App\Models\BugReport;
 use App\Models\Release;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -22,7 +21,7 @@ class DashboardStatisticsService
         $endOfMonth = Carbon::now()->endOfMonth();
 
         return Cache::remember('dashboard_features_released_this_month', 14400, function () use($startOfMonth, $endOfMonth){
-            return Feature::whereHas('release', function ($query) use ($startOfMonth, $endOfMonth){
+            return Feature::where('type', 'feature')->whereHas('release', function ($query) use ($startOfMonth, $endOfMonth){
                 $query->whereBetween('release_date', [$startOfMonth, $endOfMonth]);
             })->count();
         });
@@ -36,7 +35,7 @@ class DashboardStatisticsService
     public function getOpenBugReports(): int
     {
         return Cache::remember('dashboard_open_bug_reports', 600, function (){
-            return BugReport::whereIn('status', ['open', 'in_progress'])->count();
+            return Feature::where('type', 'bug')->whereIn('status', ['approved', 'open', 'in progress'])->count();
         });
     }
 
@@ -71,7 +70,7 @@ class DashboardStatisticsService
         $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
         $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
 
-        return Feature::whereHas('release', function ($query) use ($startOfLastMonth, $endOfLastMonth){
+        return Feature::where('type', 'feature')->whereHas('release', function ($query) use ($startOfLastMonth, $endOfLastMonth){
             $query->whereBetween('release_date', [$startOfLastMonth, $endOfLastMonth]);
         })->count();
     }

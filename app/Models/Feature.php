@@ -24,11 +24,11 @@ class Feature extends Model
 
     public function bugReports(): HasMany
     {
-        return $this->hasMany(BugReport::class);
+        //
     }
 
     public function changeRequests(): HasMany
     {
-        return $this->hasMany(ChangeRequest::class);
+        //
     }
 }

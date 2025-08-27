@@ -5,6 +5,6 @@ namespace App\Enums;
 enum FeatureTypeEnum: string
 {
     case Feature = 'feature';
-    case BugFix = 'bug fix';
-    case ChangeRequest = 'change request';
+    case BugFix = 'bug';
+    case ChangeRequest = 'change';
 }

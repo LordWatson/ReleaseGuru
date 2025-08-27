@@ -15,17 +15,20 @@ class ProjectSeeder extends Seeder
     {
         Project::create([
             'name' => 'CRM',
-            'description' => 'CRM System for the company.'
+            'description' => 'CRM System for the company.',
+            'health' => 'running'
         ]);
 
         Project::create([
             'name' => 'CMS',
-            'description' => 'The CMS System for the company.'
+            'description' => 'The CMS System for the company.',
+            'health' => 'running'
         ]);
 
         Project::create([
             'name' => 'Invoicing',
-            'description' => 'The Invoicing System for the company.'
+            'description' => 'The Invoicing System for the company.',
+            'health' => 'down'
         ]);
     }
 }

@@ -23,8 +23,6 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             ReleaseSeeder::class,
             FeatureSeeder::class,
-            BugReportSeeder::class,
-            ChangeRequestSeeder::class,
         ]);
 
         Schema::enableForeignKeyConstraints();
