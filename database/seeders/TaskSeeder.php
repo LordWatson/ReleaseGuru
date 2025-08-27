@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
-use App\Enums\FeatureTypeEnum;
-use App\Models\Feature;
+use App\Enums\TaskTypeEnum;
+use App\Models\BugReport;
+use App\Models\Task;
 use App\Models\Project;
 use App\Models\Release;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class FeatureSeeder extends Seeder
+class TaskSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,17 +21,20 @@ class FeatureSeeder extends Seeder
         $releases = Release::all();
         $developers = User::where('role_id', 2)->pluck('id');
         $projects = Project::pluck('id');
+        $bugs = BugReport::pluck('id');
 
-        $types = FeatureTypeEnum::cases();
+        $types = TaskTypeEnum::cases();
         $tagsPool = ['quoting', 'ordering', 'payments', 'auth', 'dashboard', 'optimization', 'maintenance', 'api'];
 
         foreach($releases as $release){
             for($i = 1; $i <= rand(3, 15); $i++){
                 $type = $types[array_rand($types)]->value;
 
-                Feature::create([
+                Task::create([
                     'release_id' => $release->id,
                     'developer_id' => $developers->random(),
+                    'bug_report_id' => $type == 'bug' ? $bugs->random() : null,
+                    'created_by' => 1,
                     'project_id' => $projects->random(),
                     'title' => fake()->sentence(4),
                     'description' => fake()->paragraphs(2, true),

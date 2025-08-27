@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReleaseController;
@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('projects', ProjectController::class);
     Route::resource('releases', ReleaseController::class);
-    Route::resource('features', FeatureController::class);
+    Route::resource('features', TaskController::class);
     Route::resource('reports', ReportController::class);
 });
 

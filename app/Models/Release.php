@@ -13,8 +13,8 @@ class Release extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function features(): HasMany
+    public function tasks(): HasMany
     {
-        return $this->hasMany(Feature::class);
+        return $this->hasMany(Task::class);
     }
 }

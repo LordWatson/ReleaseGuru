@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Feature;
+use App\Models\BugReport;
+use App\Models\Task;
 use App\Models\Release;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -11,17 +12,17 @@ use Illuminate\Support\Facades\DB;
 class DashboardStatisticsService
 {
     /**
-     * Get count of features released this month
+     * Get count of tasks released this month
      * Cached results every 240 seconds
      * @return int
      */
-    public function getFeaturesReleasedThisMonth(): int
+    public function getTasksReleasedThisMonth(): int
     {
         $startOfMonth = Carbon::now()->startOfMonth();
         $endOfMonth = Carbon::now()->endOfMonth();
 
-        return Cache::remember('dashboard_features_released_this_month', 14400, function () use($startOfMonth, $endOfMonth){
-            return Feature::where('type', 'feature')->whereHas('release', function ($query) use ($startOfMonth, $endOfMonth){
+        return Cache::remember('dashboard_tasks_released_this_month', 14400, function () use($startOfMonth, $endOfMonth){
+            return Task::where('type', 'feature')->whereHas('release', function ($query) use ($startOfMonth, $endOfMonth){
                 $query->whereBetween('release_date', [$startOfMonth, $endOfMonth]);
             })->count();
         });
@@ -35,7 +36,7 @@ class DashboardStatisticsService
     public function getOpenBugReports(): int
     {
         return Cache::remember('dashboard_open_bug_reports', 600, function (){
-            return Feature::where('type', 'bug')->whereIn('status', ['approved', 'open', 'in progress'])->count();
+            return BugReport::whereIn('status', ['approved', 'open', 'in progress'])->count();
         });
     }
 
@@ -56,7 +57,7 @@ class DashboardStatisticsService
     public function getDashboardStats(): array
     {
         return [
-            'features_released_this_month' => $this->getFeaturesReleasedThisMonth(),
+            'tasks_released_this_month' => $this->getTasksReleasedThisMonth(),
             'open_bug_reports' => $this->getOpenBugReports(),
             'releases_this_month' => $this->getReleasesThisMonth(),
         ];
@@ -65,12 +66,12 @@ class DashboardStatisticsService
     /**
      * Get comparison data for previous month
      */
-    public function getFeaturesReleasedLastMonth(): int
+    public function getTasksReleasedLastMonth(): int
     {
         $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
         $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
 
-        return Feature::where('type', 'feature')->whereHas('release', function ($query) use ($startOfLastMonth, $endOfLastMonth){
+        return Task::where('type', 'feature')->whereHas('release', function ($query) use ($startOfLastMonth, $endOfLastMonth){
             $query->whereBetween('release_date', [$startOfLastMonth, $endOfLastMonth]);
         })->count();
     }
@@ -92,15 +93,15 @@ class DashboardStatisticsService
     public function getComprehensiveDashboardStats(): array
     {
         $currentStats = $this->getDashboardStats();
-        $featuresLastMonth = $this->getFeaturesReleasedLastMonth();
+        $tasksLastMonth = $this->getTasksReleasedLastMonth();
         $releasesLastMonth = $this->getReleasesLastMonth();
 
         return [
             'current' => $currentStats,
             'comparisons' => [
-                'features_change' => $currentStats['features_released_this_month'] - $featuresLastMonth,
+                'tasks_change' => $currentStats['tasks_released_this_month'] - $tasksLastMonth,
                 'releases_change' => $currentStats['releases_this_month'] - $releasesLastMonth,
-                'features_last_month' => $featuresLastMonth,
+                'tasks_last_month' => $tasksLastMonth,
                 'releases_last_month' => $releasesLastMonth,
             ]
         ];

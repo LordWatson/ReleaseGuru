@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Feature;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
-class FeatureController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class FeatureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Feature $feature)
+    public function show(Task $task)
     {
         //
     }
@@ -42,7 +42,7 @@ class FeatureController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Feature $feature)
+    public function edit(Task $task)
     {
         //
     }
@@ -50,7 +50,7 @@ class FeatureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Feature $feature)
+    public function update(Request $request, Task $task)
     {
         //
     }
@@ -58,7 +58,7 @@ class FeatureController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Feature $feature)
+    public function destroy(Task $task)
     {
         //
     }

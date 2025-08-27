@@ -48,19 +48,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function features(): HasMany
+    public function tasks(): HasMany
     {
-        return $this->hasMany(Feature::class, 'developer_id');
-    }
-
-    public function bugReports(): HasMany
-    {
-        return $this->hasMany(BugReport::class, 'created_by');
-    }
-
-    public function changeRequests(): HasMany
-    {
-        return $this->hasMany(ChangeRequest::class, 'created_by');
+        return $this->hasMany(Task::class, 'developer_id');
     }
 
     public function organization(): BelongsTo

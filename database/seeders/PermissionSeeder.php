@@ -15,7 +15,7 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $modules = ['releases', 'users', 'roles', 'permissions', 'features', 'reports', 'bug reports', 'change requests', 'projects'];
+        $modules = ['releases', 'users', 'roles', 'permissions', 'tasks', 'reports', 'bug reports', 'change requests', 'projects'];
 
         $permissionsData = [];
 
@@ -39,11 +39,11 @@ class PermissionSeeder extends Seeder
         Role::find(1)->permissions()->sync($adminPermissions);
         Role::find(3)->permissions()->sync($adminPermissions);
 
-        // give developer permission to view and edit features, create releases
+        // give developer permission to view and edit tasks, create releases
         $developerPermissions = Permission::where(function ($query) {
             $query->where('module', 'releases')
                 ->orWhere(function ($query) {
-                    $query->where('module', 'features')
+                    $query->where('module', 'tasks')
                         ->whereIn('action', ['view', 'edit']);
                 })
                 ->orWhere(function ($query) {

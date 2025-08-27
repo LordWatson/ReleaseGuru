@@ -14,16 +14,16 @@ class Project extends Model
         return $this->hasMany(Release::class);
     }
 
-    public function features(): HasMany
+    public function tasks(): HasMany
     {
-        return $this->hasMany(Feature::class);
+        return $this->hasMany(Task::class);
     }
 
     #[Scope]
-    protected function activeFeaturesCount(Builder $query): Builder
+    protected function activeTasksCount(Builder $query): Builder
     {
         return $query->withCount([
-            'features as active_features_count' => function ($query){
+            'tasks as active_tasks_count' => function ($query){
                 $query->whereIn('status', ['approved', 'in progress']);
             }
         ]);

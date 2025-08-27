@@ -1,21 +1,21 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 mb-6">
-    <!-- Features Released This Month -->
+    <!-- Tasks Released This Month -->
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-sm font-semibold text-gray-500 flex items-center">
-            Features Released
+            Tasks Released
             <span class="ml-2 text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded">
                 {{ now()->format('F') }}
             </span>
         </h3>
         <p class="mt-1 text-3xl font-bold text-gray-900 flex items-center">
-            {{ $dashboardData['current']['features_released_this_month'] }}
-            @if($dashboardData['comparisons']['features_change'] > 0)
+            {{ $dashboardData['current']['tasks_released_this_month'] }}
+            @if($dashboardData['comparisons']['tasks_change'] > 0)
                 <span class="ml-2 text-sm text-green-500 font-medium flex">
-                    ↑ {{ $dashboardData['comparisons']['features_change'] }}
+                    ↑ {{ $dashboardData['comparisons']['tasks_change'] }}
                 </span>
-            @elseif($dashboardData['comparisons']['features_change'] < 0)
+            @elseif($dashboardData['comparisons']['tasks_change'] < 0)
                 <span class="ml-2 text-sm text-red-500 font-medium flex">
-                    ↓ {{ abs($dashboardData['comparisons']['features_change']) }}
+                    ↓ {{ abs($dashboardData['comparisons']['tasks_change']) }}
                 </span>
             @else
                 <span class="ml-2 text-sm text-gray-500 font-medium flex">
@@ -23,7 +23,7 @@
                 </span>
             @endif
         </p>
-        <small class="text-gray-400">vs last month ({{ $dashboardData['comparisons']['features_last_month'] }})</small>
+        <small class="text-gray-400">vs last month ({{ $dashboardData['comparisons']['tasks_last_month'] }})</small>
     </div>
 
     <!-- Open Bug Reports -->

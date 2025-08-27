@@ -18,7 +18,7 @@
             </li>
             <li>
                 <x-nav-link :href="route('features.index')" :active="request()->is('features')">
-                    {{ __('Features') }}
+                    {{ __('Tasks') }}
                 </x-nav-link>
             </li>
             <li>

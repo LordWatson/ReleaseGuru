@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum FeatureTypeEnum: string
+enum TaskTypeEnum: string
 {
     case Feature = 'feature';
     case BugFix = 'bug';

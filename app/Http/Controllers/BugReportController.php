@@ -2,27 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
-use App\Services\DashboardStatisticsService;
+use App\Models\BugReport;
 use Illuminate\Http\Request;
 
-class DashboardController extends Controller
+class BugReportController extends Controller
 {
-    public function __construct(
-        private readonly DashboardStatisticsService $dashboardStatisticsService
-    ) {}
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $dashboardData = $this->dashboardStatisticsService->getComprehensiveDashboardStats();
-
-        $projects = Project::activeTasksCount()->get();
-
-        return view('dashboard.dashboard', compact('dashboardData', 'projects'));
-
+        //
     }
 
     /**
@@ -44,7 +34,7 @@ class DashboardController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(BugReport $bugReport)
     {
         //
     }
@@ -52,7 +42,7 @@ class DashboardController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(BugReport $bugReport)
     {
         //
     }
@@ -60,7 +50,7 @@ class DashboardController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, BugReport $bugReport)
     {
         //
     }
@@ -68,7 +58,7 @@ class DashboardController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(BugReport $bugReport)
     {
         //
     }

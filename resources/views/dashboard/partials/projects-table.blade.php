@@ -13,7 +13,7 @@
                     Health
                 </th>
                 <th scope="col" class="px-4 py-2 text-sm text-gray-500 font-medium">
-                    WIP Features
+                    WIP Tasks
                 </th>
                 <th scope="col" class="px-4 py-2 text-sm text-gray-500 font-medium">
                     Next Release
@@ -34,7 +34,7 @@
                             {{ __( ucfirst($project->health) ) }}
                         </x-status-label>
                     </td>
-                    <td class="outstanding-features px-4 py-2 text-sm text-gray-900">{{ $project->active_features_count }}</td>
+                    <td class="outstanding-features px-4 py-2 text-sm text-gray-900">{{ $project->active_tasks_count }}</td>
                     <td class="next-release px-4 py-2 text-sm text-gray-900">{{ now() }}</td>
                 </tr>
             @endforeach
