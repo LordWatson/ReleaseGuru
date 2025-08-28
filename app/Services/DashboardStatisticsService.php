@@ -2,108 +2,189 @@
 
 namespace App\Services;
 
+use App\Contracts\Services\StatisticsServiceInterface;
 use App\Models\BugReport;
 use App\Models\Task;
 use App\Models\Release;
+use App\Services\Base\BaseStatisticsService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
-class DashboardStatisticsService
+class DashboardStatisticsService extends BaseStatisticsService implements StatisticsServiceInterface
 {
-    /**
-     * Get count of tasks released this month
-     * Cached results every 240 seconds
-     * @return int
-     */
-    public function getTasksReleasedThisMonth(): int
+    protected function getCachePrefix(): string
     {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+        return 'dashboard_stats';
+    }
 
-        return Cache::remember('dashboard_tasks_released_this_month', 14400, function () use($startOfMonth, $endOfMonth){
-            return Task::where('type', 'feature')->whereHas('release', function ($query) use ($startOfMonth, $endOfMonth){
-                $query->whereBetween('release_date', [$startOfMonth, $endOfMonth]);
-            })->count();
+    /**
+     * Get comprehensive dashboard statistics with enhanced data
+     */
+    public function getComprehensiveStats(): array
+    {
+        return $this->remember(
+            'comprehensive_dashboard_stats',
+            self::CACHE_TTL_MEDIUM,
+            fn() => $this->buildComprehensiveStats()
+        );
+    }
+
+    /**
+     * Build comprehensive statistics data
+     */
+    private function buildComprehensiveStats(): array
+    {
+        $current = $this->getCurrentMonthStats();
+        $previous = $this->getPreviousMonthStats();
+
+        return [
+            'current' => $current,
+            'previous' => $previous,
+            'comparisons' => $this->buildComparisons($current, $previous),
+            'trends' => $this->buildTrends($current, $previous),
+            'metadata' => [
+                'generated_at' => now()->toISOString(),
+                'period' => [
+                    'current_month' => Carbon::now()->format('F Y'),
+                    'previous_month' => Carbon::now()->subMonth()->format('F Y'),
+                ],
+            ]
+        ];
+    }
+
+    /**
+     * Get current month statistics with optimized caching
+     */
+    private function getCurrentMonthStats(): array
+    {
+        $dateRanges = $this->getDateRanges();
+
+        return [
+            'tasks_released' => $this->getTasksReleasedInPeriod(
+                $dateRanges['current_month']['start'],
+                $dateRanges['current_month']['end']
+            ),
+            'open_bug_reports' => $this->getOpenBugReports(),
+            'releases_count' => $this->getReleasesInPeriod(
+                $dateRanges['current_month']['start'],
+                $dateRanges['current_month']['end']
+            ),
+        ];
+    }
+
+    /**
+     * Get previous month statistics
+     */
+    private function getPreviousMonthStats(): array
+    {
+        $dateRanges = $this->getDateRanges();
+
+        return [
+            'tasks_released' => $this->getTasksReleasedInPeriod(
+                $dateRanges['last_month']['start'],
+                $dateRanges['last_month']['end']
+            ),
+            'releases_count' => $this->getReleasesInPeriod(
+                $dateRanges['last_month']['start'],
+                $dateRanges['last_month']['end']
+            ),
+        ];
+    }
+
+    /**
+     * Build comparison data between periods
+     */
+    private function buildComparisons(array $current, array $previous): array
+    {
+        return [
+            'tasks_change' => $current['tasks_released'] - $previous['tasks_released'],
+            'releases_change' => $current['releases_count'] - $previous['releases_count'],
+            'tasks_change_percentage' => $this->calculatePercentageChange(
+                $previous['tasks_released'],
+                $current['tasks_released']
+            ),
+            'releases_change_percentage' => $this->calculatePercentageChange(
+                $previous['releases_count'],
+                $current['releases_count']
+            ),
+        ];
+    }
+
+    /**
+     * Build trend indicators
+     */
+    private function buildTrends(array $current, array $previous): array
+    {
+        return [
+            'tasks_trend' => $this->getTrendDirection($previous['tasks_released'], $current['tasks_released']),
+            'releases_trend' => $this->getTrendDirection($previous['releases_count'], $current['releases_count']),
+        ];
+    }
+
+    /**
+     * Get trend direction (up, down, stable)
+     */
+    private function getTrendDirection(int $previous, int $current): string
+    {
+        if ($current > $previous) {
+            return 'up';
+        } elseif ($current < $previous) {
+            return 'down';
+        }
+
+        return 'stable';
+    }
+
+    /**
+     * Get tasks released in a specific period
+     */
+    private function getTasksReleasedInPeriod(Carbon $startDate, Carbon $endDate): int
+    {
+        $cacheKey = 'tasks_released_' . $startDate->format('Y_m');
+
+        return $this->remember($cacheKey, self::CACHE_TTL_LONG, function () use ($startDate, $endDate) {
+            return Task::where('type', 'feature')
+                ->whereHas('release', function ($query) use ($startDate, $endDate) {
+                    $query->whereBetween('release_date', [$startDate, $endDate]);
+                })
+                ->count();
         });
     }
 
     /**
-     * Get count of bug reports that are 'open' or 'in_progress'
-     * Cached results every 10 minutes
-     * @return int
+     * Get releases in a specific period
      */
-    public function getOpenBugReports(): int
+    private function getReleasesInPeriod(Carbon $startDate, Carbon $endDate): int
     {
-        return Cache::remember('dashboard_open_bug_reports', 600, function (){
+        $cacheKey = 'releases_count_' . $startDate->format('Y_m');
+
+        return $this->remember($cacheKey, self::CACHE_TTL_LONG, function () use ($startDate, $endDate) {
+            return Release::whereBetween('release_date', [$startDate, $endDate])->count();
+        });
+    }
+
+    /**
+     * Get count of open bug reports with a short cache
+     */
+    private function getOpenBugReports(): int
+    {
+        return $this->remember('open_bug_reports', self::CACHE_TTL_SHORT, function () {
             return BugReport::whereIn('status', ['approved', 'open', 'in progress'])->count();
         });
     }
 
-    /**
-     * Get count of releases this month
-     */
-    public function getReleasesThisMonth(): int
-    {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-
-        return Release::whereBetween('release_date', [$startOfMonth, $endOfMonth])->count();
-    }
-
-    /**
-     * Get all dashboard statistics at once
-     */
-    public function getDashboardStats(): array
-    {
-        return [
-            'tasks_released_this_month' => $this->getTasksReleasedThisMonth(),
-            'open_bug_reports' => $this->getOpenBugReports(),
-            'releases_this_month' => $this->getReleasesThisMonth(),
-        ];
-    }
-
-    /**
-     * Get comparison data for previous month
-     */
-    public function getTasksReleasedLastMonth(): int
-    {
-        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
-
-        return Task::where('type', 'feature')->whereHas('release', function ($query) use ($startOfLastMonth, $endOfLastMonth){
-            $query->whereBetween('release_date', [$startOfLastMonth, $endOfLastMonth]);
-        })->count();
-    }
-
-    /**
-     * Get releases count for last month
-     */
-    public function getReleasesLastMonth(): int
-    {
-        $startOfLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endOfLastMonth = Carbon::now()->subMonth()->endOfMonth();
-
-        return Release::whereBetween('release_date', [$startOfLastMonth, $endOfLastMonth])->count();
-    }
-
-    /**
-     * Get comprehensive dashboard data with comparisons
-     */
+    // Legacy method for backward compatibility
     public function getComprehensiveDashboardStats(): array
     {
-        $currentStats = $this->getDashboardStats();
-        $tasksLastMonth = $this->getTasksReleasedLastMonth();
-        $releasesLastMonth = $this->getReleasesLastMonth();
+        return $this->getComprehensiveStats();
+    }
 
-        return [
-            'current' => $currentStats,
-            'comparisons' => [
-                'tasks_change' => $currentStats['tasks_released_this_month'] - $tasksLastMonth,
-                'releases_change' => $currentStats['releases_this_month'] - $releasesLastMonth,
-                'tasks_last_month' => $tasksLastMonth,
-                'releases_last_month' => $releasesLastMonth,
-            ]
-        ];
+    // Additional utility methods
+    public function getQuickStats(): array
+    {
+        return $this->remember('quick_stats', self::CACHE_TTL_SHORT, function () {
+            return [
+                'open_bug_reports' => $this->getOpenBugReports(),
+            ];
+        });
     }
 }

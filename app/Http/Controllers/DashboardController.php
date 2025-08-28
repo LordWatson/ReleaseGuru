@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Services\StatisticsServiceInterface;
 use App\Models\Project;
-use App\Services\DashboardStatisticsService;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function __construct(
-        private readonly DashboardStatisticsService $dashboardStatisticsService
+        private readonly StatisticsServiceInterface $statisticsService
     ) {}
 
     /**
-     * Display a listing of the resource.
+     * Display the dashboard with statistics and projects
      */
-    public function index()
+    public function index(): \Illuminate\View\View
     {
-        $dashboardData = $this->dashboardStatisticsService->getComprehensiveDashboardStats();
-
+        $dashboardData = $this->statisticsService->getComprehensiveStats();
         $projects = Project::activeTasksCount()->get();
 
         return view('dashboard.dashboard', compact('dashboardData', 'projects'));
-
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\Services\StatisticsServiceInterface;
 use App\Services\DashboardStatisticsService;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(DashboardStatisticsService::class);
+        $this->app->bind(
+            StatisticsServiceInterface::class,
+            DashboardStatisticsService::class
+        );
     }
 
     /**

@@ -8,7 +8,7 @@
             </span>
         </h3>
         <p class="mt-1 text-3xl font-bold text-gray-900 flex items-center">
-            {{ $dashboardData['current']['tasks_released_this_month'] }}
+            {{ $dashboardData['current']['tasks_released'] }}
             @if($dashboardData['comparisons']['tasks_change'] > 0)
                 <span class="ml-2 text-sm text-green-500 font-medium flex">
                     ↑ {{ $dashboardData['comparisons']['tasks_change'] }}
@@ -23,7 +23,7 @@
                 </span>
             @endif
         </p>
-        <small class="text-gray-400">vs last month ({{ $dashboardData['comparisons']['tasks_last_month'] }})</small>
+        <small class="text-gray-400">vs last month ({{ $dashboardData['previous']['tasks_released'] }})</small>
     </div>
 
     <!-- Open Bug Reports -->
@@ -59,7 +59,7 @@
             </span>
         </h3>
         <p class="mt-1 text-3xl font-bold text-gray-900 flex items-center">
-            {{ $dashboardData['current']['releases_this_month'] }}
+            {{ $dashboardData['current']['releases_count'] }}
             @if($dashboardData['comparisons']['releases_change'] > 0)
                 <span class="ml-2 text-sm text-green-500 font-medium flex">
                         ↑ {{ $dashboardData['comparisons']['releases_change'] }}
@@ -74,6 +74,6 @@
                 </span>
             @endif
         </p>
-        <small class="text-gray-400">vs last month ({{ $dashboardData['comparisons']['releases_last_month'] }})</small>
+        <small class="text-gray-400">vs last month ({{ $dashboardData['previous']['releases_count'] }})</small>
     </div>
 </div>
